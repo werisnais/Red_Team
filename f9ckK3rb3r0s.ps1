@@ -6,7 +6,6 @@ function RequestServiceTicket([String] $SPNtoRequest )
     Add-Type -AssemblyName System.IdentityModel
     Return New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $SPNtoRequest
 }
-
 #######################################################################################
 ############################## EMPIRE KERBEROAST ######################################
 #######################################################################################
