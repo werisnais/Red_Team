@@ -1,2 +1,5 @@
-# Red_Team
+#####################
 Red Teaming Resources 
+#####################
+
+Collection of useful resources for red team.
