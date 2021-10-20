@@ -58,29 +58,29 @@ function ListTechniquesBrief([String] $Technique)
     Invoke-AtomicTest $Technique -ShowDetailsBrief -Path $AtomicFolder
 } 
 
-function ListTechniquesDetails([String] $Technique)
+function ListTechniquesDetails([String] $Technique, [String] $TestNumbers)
 {
     $ModuleAtomic = $ARCPath + "\invoke-atomicredteam" + "\Invoke-AtomicRedTeam.psd1"
     Import-Module $ModuleAtomic -Force
-    Invoke-AtomicTest $Technique -ShowDetails -Path $AtomicFolder
+    Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -ShowDetails -Path $AtomicFolder
 } 
 
-function RunTechnique([String] $Technique)
+function RunTechnique([String] $Technique, [String] $TestNumbers)
 {
     $ModuleAtomic = $ARCPath + "\invoke-atomicredteam" + "\Invoke-AtomicRedTeam.psd1"
     $LogFile = $LogFolder + "\log_" + $Technique + "_" + (Get-Date -Format "yyyyMMddHHmm") + ".csv"
     Import-Module $ModuleAtomic -Force
-    Invoke-AtomicTest $Technique -Path $AtomicFolder -GetPrereqs
-    Invoke-AtomicTest $Technique -Path $AtomicFolder -CheckPrereqs
-    Invoke-AtomicTest $Technique -Path $AtomicFolder -ExecutionLogPath $LogFile -Confirm:$false
+    Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -GetPrereqs
+    Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -CheckPrereqs
+    Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -ExecutionLogPath $LogFile -Confirm:$false
 } 
 
-function CleanTechnique([String] $Technique)
+function CleanTechnique([String] $Technique, [String] $TestNumbers)
 {
     $ModuleAtomic = $ARCPath + "\invoke-atomicredteam" + "\Invoke-AtomicRedTeam.psd1"
     $LogFile = $LogFolder + "\log_" + $Technique + "_" + (Get-Date -Format "yyyyMMddHHmm") + ".csv"
     Import-Module $ModuleAtomic -Force
-    Invoke-AtomicTest $Technique -Path $AtomicFolder -ExecutionLogPath $LogFile -Cleanup
+    Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -ExecutionLogPath $LogFile -Cleanup
 } 
 
 function OcultaBarraProgreso()
@@ -104,7 +104,7 @@ do
             Continue
         } 'L' {
             cls
-            $Techn = Read-Host "Indique Tecnica a listar o 'All' para todas:"
+            $Techn = Read-Host "Indique Tecnica a listar (ej. 1,2,3,4...) o 'All' para todas:"
             cls
             ListTechniquesBrief -Technique $Techn
             OcultaBarraProgreso
@@ -112,22 +112,25 @@ do
         } 'D' {
             cls
             $Techn = Read-Host "Indique Tecnica a listar:"
+	    $TestN = Read-Host "Indique Las ejecuciones (ej. 1,2,3,4...) a listar:"
             cls
-            ListTechniquesDetails -Technique $Techn
+            ListTechniquesDetails -Technique $Techn -TestNumbers $TestN
             OcultaBarraProgreso
             pause
         } 'R' {
             cls
             $Techn = Read-Host "Indique Tecnica a ejecutar:"
+	    $TestN = Read-Host "Indique Las ejecuciones (ej. 1,2,3,4...) a listar:"
             cls
-            RunTechnique -Technique $Techn
+            RunTechnique -Technique $Techn -TestNumbers $TestN
             OcultaBarraProgreso
             pause
         } 'C' {
             cls
             $Techn = Read-Host "Indique Tecnica a limpiar:"
+	    $TestN = Read-Host "Indique Las ejecuciones (ej. 1,2,3,4...) a listar:"
             cls
-            CleanTechnique -Technique $Techn
+            CleanTechnique -Technique $Techn -TestNumbers $TestN
             OcultaBarraProgreso
             pause
         } 'q' {
