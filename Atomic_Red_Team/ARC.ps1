@@ -62,7 +62,13 @@ function ListTechniquesDetails([String] $Technique, [String] $TestNumbers)
 {
     $ModuleAtomic = $ARCPath + "\invoke-atomicredteam" + "\Invoke-AtomicRedTeam.psd1"
     Import-Module $ModuleAtomic -Force
-    Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -ShowDetails -Path $AtomicFolder
+    if([String] $TestNumbers -eq "All")
+    {
+        Invoke-AtomicTest $Technique -ShowDetails -Path $AtomicFolder
+    }else
+    {
+        Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -ShowDetails -Path $AtomicFolder
+    }
 } 
 
 function RunTechnique([String] $Technique, [String] $TestNumbers)
@@ -70,9 +76,18 @@ function RunTechnique([String] $Technique, [String] $TestNumbers)
     $ModuleAtomic = $ARCPath + "\invoke-atomicredteam" + "\Invoke-AtomicRedTeam.psd1"
     $LogFile = $LogFolder + "\log_" + $Technique + "_" + (Get-Date -Format "yyyyMMddHHmm") + ".csv"
     Import-Module $ModuleAtomic -Force
-    Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -GetPrereqs
-    Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -CheckPrereqs
-    Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -ExecutionLogPath $LogFile -Confirm:$false
+    if([String] $TestNumbers -eq "All")
+    {
+        Invoke-AtomicTest $Technique -Path $AtomicFolder -GetPrereqs
+        Invoke-AtomicTest $Technique -Path $AtomicFolder -CheckPrereqs
+        Invoke-AtomicTest $Technique -Path $AtomicFolder -ExecutionLogPath $LogFile -Confirm:$false
+    }else
+    {
+        Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -GetPrereqs
+        Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -CheckPrereqs
+        Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -ExecutionLogPath $LogFile -Confirm:$false
+    }
+    
 } 
 
 function CleanTechnique([String] $Technique, [String] $TestNumbers)
@@ -80,7 +95,14 @@ function CleanTechnique([String] $Technique, [String] $TestNumbers)
     $ModuleAtomic = $ARCPath + "\invoke-atomicredteam" + "\Invoke-AtomicRedTeam.psd1"
     $LogFile = $LogFolder + "\log_" + $Technique + "_" + (Get-Date -Format "yyyyMMddHHmm") + ".csv"
     Import-Module $ModuleAtomic -Force
-    Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -ExecutionLogPath $LogFile -Cleanup
+    if([String] $TestNumbers -eq "All")
+    {
+        Invoke-AtomicTest $Technique -Path $AtomicFolder -ExecutionLogPath $LogFile -Cleanup
+    }else
+    {
+        Invoke-AtomicTest $Technique -TestNumbers $TestNumbers -Path $AtomicFolder -ExecutionLogPath $LogFile -Cleanup
+    }
+    
 } 
 
 function OcultaBarraProgreso()
@@ -104,7 +126,7 @@ do
             Continue
         } 'L' {
             cls
-            $Techn = Read-Host "Indique Tecnica a listar (ej. 1,2,3,4...) o 'All' para todas:"
+            $Techn = Read-Host "Indique Tecnica a listar o 'All' para todas"
             cls
             ListTechniquesBrief -Technique $Techn
             OcultaBarraProgreso
@@ -112,7 +134,7 @@ do
         } 'D' {
             cls
             $Techn = Read-Host "Indique Tecnica a listar:"
-	    $TestN = Read-Host "Indique Las ejecuciones (ej. 1,2,3,4...) a listar:"
+	    $TestN = Read-Host "Indique la ejecucion a listar ('All' para todas)"
             cls
             ListTechniquesDetails -Technique $Techn -TestNumbers $TestN
             OcultaBarraProgreso
@@ -120,7 +142,7 @@ do
         } 'R' {
             cls
             $Techn = Read-Host "Indique Tecnica a ejecutar:"
-	    $TestN = Read-Host "Indique Las ejecuciones (ej. 1,2,3,4...) a listar:"
+	        $TestN = Read-Host "Indique la ejecucion a listar ('All' para todas)"
             cls
             RunTechnique -Technique $Techn -TestNumbers $TestN
             OcultaBarraProgreso
@@ -128,7 +150,7 @@ do
         } 'C' {
             cls
             $Techn = Read-Host "Indique Tecnica a limpiar:"
-	    $TestN = Read-Host "Indique Las ejecuciones (ej. 1,2,3,4...) a listar:"
+	    $TestN = Read-Host "Indique la ejecucion a listar ('All' para todas)"
             cls
             CleanTechnique -Technique $Techn -TestNumbers $TestN
             OcultaBarraProgreso
